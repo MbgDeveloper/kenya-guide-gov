@@ -56,23 +56,55 @@ const list = document.getElementById("service-list");
 // const name = "SHA"
 // console.log(`Welcome to the ${name} guide`)
 
-for (const service of services) {
-    list.innerHTML += `
-        <section class = "service">
-            <h2>${service.title}</h2>
-            <p>Category: ${service.category}</p>
+function showServices(items){
+   
+    list.innerHTML = "";
 
-            <h3>Documents you need</h3>
-            <ul>
-              ${service.documents.map(doc => `<li>${doc}</li>`).join("")}
-            </ul>
-            
-            <h3>Steps</h3>
-            <ol>
-              ${service.steps.map(step => `<li>${step}</li>`).join("")};
-            </ol>
+    if (items.length === 0){
+        list.innerHTML = "<p>No services found. Try a different word.</p>"
+        return
+    }
 
-            <p><a href ="${service.officialUrl}">Official website</a></p>
-        </section>
-    `;
+    for (const service of items) {
+        list.innerHTML += `
+            <section class = "service">
+                <h2>${service.title}</h2>
+                <p>Category: ${service.category}</p>
+
+                <h3>Documents you need</h3>
+                <ul>
+                ${(service.documents || []).map(doc => `<li>${doc}</li>`).join("")}
+                </ul>
+                
+                <h3>Steps</h3>
+                <ol>
+                ${(service.steps || []).map(step => `<li>${step}</li>`).join("")};
+                </ol>
+
+                <p><a href ="${service.officialUrl}">Official website</a></p>
+            </section>
+         `;
+    }
 }
+
+showServices(services)
+
+const searchBox = document.getElementById("search")
+
+searchBox.addEventListener("input", function () {
+    const text = searchBox.value.toLowerCase()
+
+    const matches = services.filter(function (service) {
+        return (
+            service.title.toLowerCase().includes(text) ||
+            service.category.toLowerCase().includes(text)
+        )
+    })
+
+    showServices(matches)
+})
+
+
+
+
+
